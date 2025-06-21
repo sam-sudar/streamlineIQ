@@ -42,7 +42,7 @@ export default function BaseNode({
           position={positionMap[handle.position || "Left"]}
           style={{
             top: handle.top || `${(i + 1) * 25}px`,
-            background: "#555",
+            background: "red",
             ...handle.style,
           }}
         />
@@ -54,7 +54,7 @@ export default function BaseNode({
           type="source"
           position={Position.Right}
           id={outputHandleId}
-          style={{ top: "50%", background: "#555" }}
+          style={{ top: "50%", background: "green" }}
         />
       )}
     </div>

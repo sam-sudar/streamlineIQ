@@ -1,11 +1,9 @@
 // ui.js
-// Displays the drag-and-drop UI
-// --------------------------------------------------
-
 import { useState, useRef, useCallback } from "react";
 import ReactFlow, { Controls, Background, MiniMap } from "reactflow";
 import { useStore } from "./store";
 import { shallow } from "zustand/shallow";
+
 import { InputNode } from "./nodes/inputNode";
 import { LLMNode } from "./nodes/llmNode";
 import { OutputNode } from "./nodes/outputNode";
@@ -15,10 +13,14 @@ import AdditionNode from "./nodes/additionNode";
 import StaticNode from "./nodes/staticNode";
 import MergeNode from "./nodes/mergeNode";
 import CongratsNode from "./nodes/congratsNode";
+
+import { SubmitButton } from "./submit";
+
 import "reactflow/dist/style.css";
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
+
 const nodeTypes = {
   customInput: InputNode,
   llm: LLMNode,
@@ -44,6 +46,7 @@ const selector = (state) => ({
 export const PipelineUI = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
   const {
     nodes,
     edges,
@@ -54,44 +57,36 @@ export const PipelineUI = () => {
     onConnect,
   } = useStore(selector, shallow);
 
-  const getInitNodeData = (nodeID, type) => {
-    let nodeData = { id: nodeID, nodeType: `${type}` };
-    return nodeData;
-  };
+  const getInitNodeData = (nodeID, type) => ({ id: nodeID, nodeType: type });
 
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      if (event?.dataTransfer?.getData("application/reactflow")) {
-        const appData = JSON.parse(
-          event.dataTransfer.getData("application/reactflow")
-        );
-        const type = appData?.nodeType;
+      const appData = event.dataTransfer.getData("application/reactflow");
 
-        // check if the dropped element is valid
-        if (typeof type === "undefined" || !type) {
-          return;
-        }
+      if (!appData) return;
 
-        const position = reactFlowInstance.project({
-          x: event.clientX - reactFlowBounds.left,
-          y: event.clientY - reactFlowBounds.top,
-        });
+      const { nodeType: type } = JSON.parse(appData);
+      if (!type) return;
 
-        const nodeID = getNodeID(type);
-        const newNode = {
-          id: nodeID,
-          type,
-          position,
-          data: getInitNodeData(nodeID, type),
-        };
+      const position = reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
 
-        addNode(newNode);
-      }
+      const nodeID = getNodeID(type);
+      const newNode = {
+        id: nodeID,
+        type,
+        position,
+        data: getInitNodeData(nodeID, type),
+      };
+
+      addNode(newNode);
     },
-    [reactFlowInstance]
+    [reactFlowInstance, getNodeID, addNode]
   );
 
   const onDragOver = useCallback((event) => {
@@ -101,7 +96,7 @@ export const PipelineUI = () => {
 
   return (
     <>
-      <div ref={reactFlowWrapper} style={{ width: "100wv", height: "70vh" }}>
+      <div ref={reactFlowWrapper} style={{ width: "100vw", height: "70vh" }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -119,8 +114,11 @@ export const PipelineUI = () => {
           <Background color="#aaa" gap={gridSize} />
           <Controls />
           <MiniMap />
+
+          {/* ✅ Pass nodes and edges to the button */}
         </ReactFlow>
       </div>
+      <SubmitButton nodes={nodes} edges={edges} />
     </>
   );
 };
