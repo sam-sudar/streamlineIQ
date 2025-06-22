@@ -1,18 +1,9 @@
-// toolbar.js
-
 import { DraggableNode } from "./draggableNode";
 
 export const PipelineToolbar = () => {
   return (
-    <div style={{ padding: "10px" }}>
-      <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-        }}
-      >
+    <div className="p-4">
+      <div className="bg-gradient-to-r from-toolbarGradientFrom to-toolbarGradientTo border border-borderGlow/30 rounded-xl p-4 flex flex-wrap gap-4 shadow-lg">
         <DraggableNode type="customInput" label="Input" />
         <DraggableNode type="llm" label="LLM" />
         <DraggableNode type="customOutput" label="Output" />

@@ -1,28 +1,26 @@
-// llmNode.js
-
 import BaseNode from "../baseNode";
 
-export const LLMNode = ({ id }) => {
+export default function LLMNode({ id }) {
   return (
     <BaseNode
       title="LLM"
-      handles={[
+      inputHandles={[
         {
-          type: "target",
-          position: "Left",
           id: `${id}-system`,
+          position: "Left",
           style: { top: "33%" },
         },
         {
-          type: "target",
-          position: "Left",
           id: `${id}-prompt`,
+          position: "Left",
           style: { top: "66%" },
         },
-        { type: "source", position: "Right", id: `${id}-response` },
       ]}
+      outputHandleId={`${id}-response`}
     >
-      <div>This is a LLM node.</div>
+      <div className="text-xs text-white bg-[#31156B] px-2 py-1 rounded-md">
+        This node represents a Large Language Model (LLM) interaction.
+      </div>
     </BaseNode>
   );
-};
+}

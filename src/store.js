@@ -1,4 +1,3 @@
-// store.js
 import { create } from "zustand";
 import {
   addEdge,
@@ -13,11 +12,10 @@ export const useStore = create((set, get) => ({
   nodeIDs: {},
 
   getNodeID: (type) => {
-    const newIDs = { ...get().nodeIDs };
-    if (!newIDs[type]) newIDs[type] = 0;
-    newIDs[type] += 1;
-    set({ nodeIDs: newIDs });
-    return `${type}-${newIDs[type]}`;
+    const updatedIDs = { ...get().nodeIDs };
+    updatedIDs[type] = (updatedIDs[type] || 0) + 1;
+    set({ nodeIDs: updatedIDs });
+    return `${type}-${updatedIDs[type]}`;
   },
 
   addNode: (node) => {
@@ -33,43 +31,35 @@ export const useStore = create((set, get) => ({
   },
 
   onConnect: (connection) => {
+    const newEdge = {
+      ...connection,
+      type: "smoothstep",
+      animated: true,
+      markerEnd: {
+        type: MarkerType.Arrow,
+        width: 20,
+        height: 20,
+      },
+    };
+
+    set({ edges: addEdge(newEdge, get().edges) });
+  },
+
+  updateNodeField: (nodeId, fieldName, value) => {
     set({
-      edges: addEdge(
-        {
-          ...connection,
-          type: "smoothstep",
-          animated: true,
-          markerEnd: {
-            type: MarkerType.Arrow,
-            height: 20,
-            width: 20,
-          },
-        },
-        get().edges
+      nodes: get().nodes.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, [fieldName]: value } }
+          : node
       ),
     });
   },
 
-  updateNodeField: (nodeId, fieldName, fieldValue) => {
-    set({
-      nodes: get().nodes.map((node) => {
-        if (node.id === nodeId) {
-          return {
-            ...node,
-            data: { ...node.data, [fieldName]: fieldValue },
-          };
-        }
-        return node;
-      }),
-    });
-  },
-
   addEdgeManually: (source, sourceHandle, target, targetHandle) => {
-    const edges = get().edges;
     const edgeId = `${source}-${target}-${targetHandle}`;
+    const edges = get().edges;
 
-    const exists = edges.some((e) => e.id === edgeId);
-    if (!exists) {
+    if (!edges.some((e) => e.id === edgeId)) {
       set({
         edges: [
           ...edges,

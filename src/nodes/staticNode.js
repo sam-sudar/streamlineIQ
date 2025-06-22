@@ -1,13 +1,11 @@
 import BaseNode from "../baseNode";
 
-function StaticNode() {
+export default function StaticNode() {
   return (
-    <BaseNode title="Static" handles={[]}>
-      <div style={{ fontStyle: "italic", color: "#666" }}>
-        Still Figuring out
+    <BaseNode title="Static" inputHandles={[]} outputHandleId={null}>
+      <div className="text-xs italic text-purple-300 bg-[#31156B] px-2 py-1 rounded-md">
+        Still figuring out...
       </div>
     </BaseNode>
   );
 }
-
-export default StaticNode;

@@ -1,6 +1,5 @@
 import { Handle, Position } from "reactflow";
 
-// Map string positions to Position constants
 const positionMap = {
   Top: Position.Top,
   Bottom: Position.Bottom,
@@ -12,28 +11,20 @@ export default function BaseNode({
   title,
   children,
   outputHandleId = "output",
-  inputHandles = [], //params => [{ id, position, style }]
+  inputHandles = [],
   style = {},
 }) {
   return (
     <div
-      style={{
-        width: 220,
-        border: "1px solid #333",
-        borderRadius: 8,
-        padding: 10,
-        background: "white",
-        fontFamily: "sans-serif",
-        boxShadow: "0 0 5px rgba(0,0,0,0.1)",
-        position: "relative",
-        ...style,
-      }}
+      className="rounded-xl shadow-lg w-[220px] font-sans text-white border border-purple-600 relative z-20"
+      style={{ backgroundColor: "#1B0C42", ...style }}
     >
-      <div style={{ fontWeight: "bold", marginBottom: 6 }}>{title}</div>
+      <div className="text-sm font-bold tracking-wide text-purple-200 bg-gradient-to-br from-deepMid to-deepStart px-3 py-2">
+        {title}
+      </div>
 
-      <div>{children}</div>
+      <div className="text-xs px-4 py-4">{children}</div>
 
-      {/* Input Handles */}
       {inputHandles.map((handle, i) => (
         <Handle
           key={handle.id || i}
@@ -42,19 +33,31 @@ export default function BaseNode({
           position={positionMap[handle.position || "Left"]}
           style={{
             top: handle.top || `${(i + 1) * 25}px`,
-            background: "red",
+            background: "#7042C2",
+            border: "2px solid white",
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            transform: "translateY(-50%)",
             ...handle.style,
           }}
         />
       ))}
 
-      {/* Output Handle (optional) */}
       {outputHandleId && (
         <Handle
           type="source"
           position={Position.Right}
           id={outputHandleId}
-          style={{ top: "50%", background: "green" }}
+          style={{
+            top: "50%",
+            background: "#7042C2",
+            border: "2px solid white",
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            transform: "translateY(-50%)",
+          }}
         />
       )}
     </div>

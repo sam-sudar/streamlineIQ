@@ -4,10 +4,10 @@ import ReactFlow, { Controls, Background, MiniMap } from "reactflow";
 import { useStore } from "./store";
 import { shallow } from "zustand/shallow";
 
-import { InputNode } from "./nodes/inputNode";
-import { LLMNode } from "./nodes/llmNode";
-import { OutputNode } from "./nodes/outputNode";
-import { TextNode } from "./nodes/textNode";
+import InputNode from "./nodes/inputNode";
+import LLMNode from "./nodes/llmNode";
+import OutputNode from "./nodes/outputNode";
+import TextNode from "./nodes/textNode";
 import CounterNode from "./nodes/counterNode";
 import AdditionNode from "./nodes/additionNode";
 import StaticNode from "./nodes/staticNode";
@@ -113,7 +113,13 @@ export const PipelineUI = () => {
         >
           <Background color="#aaa" gap={gridSize} />
           <Controls />
-          <MiniMap />
+          <MiniMap
+            nodeStrokeColor={(n) => "#7042C2"}
+            nodeColor={(n) => "#31156B"}
+            nodeBorderRadius={4}
+            maskColor="rgba(27, 12, 66, 0.6)"
+            className="rounded-md border border-purple-800"
+          />
 
           {/* ✅ Pass nodes and edges to the button */}
         </ReactFlow>
